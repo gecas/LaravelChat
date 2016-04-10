@@ -40,6 +40,7 @@ Route::post('/chats/new/{user_id}', 'ChatsController@createChat');
 Route::post('/chats/current/{user_id}', 'ChatsController@getChats');
 Route::post('/chats/message/{user_id}', 'ChatsController@store');
 //Route::get('/chats/users', 'ChatsController@getUsers');
+Route::delete('/chats/{id}/{send_to}', 'ChatsController@destroy');
 Route::get('users/getAll', 'ChatsController@getAllUsers');
 
 });

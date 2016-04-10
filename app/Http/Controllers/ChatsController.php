@@ -15,7 +15,7 @@ class ChatsController extends Controller
 
     public function __construct()
     {
-
+        $this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -24,7 +24,6 @@ class ChatsController extends Controller
      */
     public function index()
     {
-        
         return view('chats.index');
     }
 
@@ -109,9 +108,16 @@ class ChatsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $send_to)
     {
-        //
+        $message = Message::findOrFail($id);
+
+        $message->delete();
+
+        $messages = $this->fetchUsers($send_to);
+
+        $current_users = $this->allUsers()["current_users"];
+        $users = $this->allUsers()["users"];
     }
 
     public function createChat($id)
@@ -246,7 +252,7 @@ class ChatsController extends Controller
 
         $messages = DB::select( DB::raw('
 
-        SELECT m.send_to, m.send_from, m.message, u.name, u.lastname
+        SELECT m.id, m.send_to, m.send_from, m.message, u.name, u.lastname
         FROM messages AS m
         LEFT JOIN users AS u ON u.id = m.send_from
         WHERE (
