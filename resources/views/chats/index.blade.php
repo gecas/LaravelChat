@@ -5,6 +5,10 @@
 	.users-list:hover{
 		cursor: pointer;
 	}
+	.users-list-wrap{
+		height: 800px;
+		overflow-y:scroll;
+	}
 	.user-image{
 		background-size: cover;
 		width: 35px;
@@ -72,9 +76,9 @@
 		</div>
 
 		<div class="col-md-4" style="background-color: #e3e3e3;height: 800px;">
-		<ul class="list-group">
+		<ul class="list-group users-list-wrap">
 
-			<li class="list-group-item users-list" v-for="user in users" v-if="users.length > 0" v-on:click="postChat( user.id )" >
+			<li class="list-group-item users-list" v-for="user in users"  v-on:click="postChat( user.id )" >
 				<div>
 				
 				<div class="user-image"  :style="{ backgroundImage: 'url(' + user.avatar_path+user.avatar_name + ')', height:35+ 'px'}"></div>
@@ -84,7 +88,7 @@
 				</li>
 
 			</ul>
-			<p v-if="users.length == 0" class="text-center">No new users</p>
+			<p  class="text-center">No new users</p>
 
 			<ul class="list-group">
 				<h4 class="text-center">Currently logged in users</h4>

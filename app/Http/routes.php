@@ -1,5 +1,5 @@
 <?php
-
+use App\User;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -31,6 +31,7 @@ Route::get('test', function () {
     // this checks for the event
     return view('chat/test');
 });
+
 
 
 Route::group(['middleware' => 'auth'], function () {

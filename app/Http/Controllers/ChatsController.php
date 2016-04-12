@@ -7,6 +7,8 @@ use App\User;
 use App\Message;
 use Auth;
 use DB;
+use Redis;
+use Cache;
 use App\Events\Messages;
 use App\Http\Requests;
 
@@ -47,6 +49,7 @@ class ChatsController extends Controller
      */
     public function store(Request $request, $id)
     {
+        $redis = Redis::connection();
        // $this->validate($request, ['message'=>'required']);
        
         $message_text = $request->message;
@@ -58,6 +61,12 @@ class ChatsController extends Controller
         $message = Message::create(['send_from' => $user1->id, 'send_to' => $user2->id, 'message'=>$message_text]);
 
         $messages = $this->fetchUsers($id);
+
+        $toRedis = $redis->hset("messages",1,json_encode($messages));
+
+        $fromRedis = $redis->hget("messages", 1);
+
+        $fromRedis = json_decode($fromRedis);
 
         $current_users = $this->allUsers()["current_users"];
         $users = $this->allUsers()["users"];
@@ -252,23 +261,22 @@ class ChatsController extends Controller
 
         $messages = DB::select( DB::raw('
 
-        SELECT m.id, m.send_to, m.send_from, m.message, u.name, u.lastname
-        FROM messages AS m
-        LEFT JOIN users AS u ON u.id = m.send_from
-        WHERE (
-        m.send_to = '.$user2->id.'
-        AND m.send_from = '.$user1->id.'
-        )
-        OR (
-        m.send_to = '.$user1->id.'
-        AND m.send_from = '.$user2->id.'
-        )
-        ORDER BY m.created_at
+            SELECT m.id, m.send_to, m.send_from, m.message, u.name, u.lastname
+            FROM messages AS m
+            LEFT JOIN users AS u ON u.id = m.send_from
+            WHERE (
+            m.send_to = '.$user2->id.'
+            AND m.send_from = '.$user1->id.'
+            )
+            OR (
+            m.send_to = '.$user1->id.'
+            AND m.send_from = '.$user2->id.'
+            )
+            ORDER BY m.created_at
 
         ') );
 
         return $messages;
-
         
     }
 }
