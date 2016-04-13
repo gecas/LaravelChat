@@ -111,8 +111,7 @@
 
                     $(block).fadeIn(2500);
 
-                    $('.messages-list').animate({ scrollTop: document.getElementsByClassName("messages-list")[0].scrollHeight }, 50);
-
+                   
                     $(block).on('click', function(event) {
                       $(this).fadeOut(1000, function(){
                         that.updateChat( message.send_from );
@@ -128,6 +127,8 @@
 
                 if(that.post_user == message.send_from){
                   that.messages.push(message);
+                  $('.messages-list').animate({ scrollTop: document.getElementsByClassName("messages-list")[0].scrollHeight }, 50);
+
                 }
               });
 
